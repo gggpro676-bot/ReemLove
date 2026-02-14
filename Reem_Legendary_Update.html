@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Reem ❤️ Legendary</title>
+<style>
+body{margin:0;overflow:hidden;background:black;font-family:Arial}
+#msg{
+position:absolute;
+top:50%;left:50%;
+transform:translate(-50%,-50%);
+width:75%;max-height:80%;
+overflow:auto;
+background:white;
+padding:40px;
+border-radius:25px;
+display:none;
+box-shadow:0 0 100px hotpink;
+animation:fade 2s ease forwards;
+}
+@keyframes fade{
+from{opacity:0;transform:translate(-50%,-60%)}
+to{opacity:1;transform:translate(-50%,-50%)}
+}
+.touch{
+position:absolute;
+bottom:20px;
+background:rgba(255,105,180,0.7);
+border:none;
+color:white;
+font-size:20px;
+padding:15px;
+border-radius:15px;
+}
+#up{left:80px;}
+#left{left:20px;}
+#right{left:140px;}
+#down{left:80px;bottom:80px;}
+</style>
+</head>
+<body>
+
+<div id="msg">
+<h1 style="text-align:center;color:red;">ريم ❤️</h1>
+<p>
+اليوم عيد الحب، لكن الحقيقة إن كل يوم معك هو عيد بالنسبة لي...
+من يوم دخلتي حياتي وأنا أحس إن قلبي اختار المكان الصح أخيرًا.
+وجودك مو بس أسعدني… وجودك غيّرني للأفضل، خلاني أهدأ، أصدق،
+وأحب بطريقة أعمق مما كنت أتخيل.
+
+يا ريم، أحبك مو بس عشان جمالك،
+أحبك عشان قلبك اللي يطمني...
+أحب تفاصيلك الصغيرة قبل الكبيرة،
+أحب ضحكتك، وحتى زعلك لأن وراه قلب حساس مليان حب.
+
+أنتِ الأمان وسط الزحمة،
+والهدوء وسط الفوضى،
+وجودك جنبي نعمة أحمد الله عليها كل يوم.
+
+لو خيروني بين الدنيا كلها وبينك،
+أختارك بدون تردد.
+
+أحبك حب يكبر كل يوم 🤍
+</p>
+</div>
+
+<button id="up" class="touch">↑</button>
+<button id="left" class="touch">←</button>
+<button id="right" class="touch">→</button>
+<button id="down" class="touch">↓</button>
+
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_6c1b07b2a7.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x000015);
+
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,3000);
+camera.position.set(0,5,60);
+
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404040));
+const light=new THREE.PointLight(0xff66aa,2,600);
+light.position.set(0,50,-400);
+scene.add(light);
+
+const ground=new THREE.Mesh(
+new THREE.PlaneGeometry(1000,1000),
+new THREE.MeshPhongMaterial({color:0x082108})
+);
+ground.rotation.x=-Math.PI/2;
+scene.add(ground);
+
+const road=new THREE.Mesh(
+new THREE.PlaneGeometry(25,800),
+new THREE.MeshPhongMaterial({color:0x222222})
+);
+road.rotation.x=-Math.PI/2;
+road.position.z=-400;
+scene.add(road);
+
+function tree(x,z){
+const trunk=new THREE.Mesh(
+new THREE.CylinderGeometry(0.5,0.5,5),
+new THREE.MeshPhongMaterial({color:0x8b4513})
+);
+trunk.position.set(x,2.5,z);
+const top=new THREE.Mesh(
+new THREE.SphereGeometry(3),
+new THREE.MeshPhongMaterial({color:0x006400})
+);
+top.position.set(x,7,z);
+scene.add(trunk,top);
+}
+for(let i=0;i<80;i++){
+tree(Math.random()*200-100,Math.random()*-700);
+}
+
+function stars(){
+const geo=new THREE.BufferGeometry();
+let verts=[];
+for(let i=0;i<4000;i++){
+verts.push((Math.random()-0.5)*2000,Math.random()*800,(Math.random()-0.5)*2000);
+}
+geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+const mat=new THREE.PointsMaterial({color:0xffffff});
+scene.add(new THREE.Points(geo,mat));
+}
+stars();
+
+function createHeart(){
+const shape=new THREE.Shape();
+shape.moveTo(0,0);
+shape.bezierCurveTo(0,5,-5,5,-5,0);
+shape.bezierCurveTo(-5,-5,0,-8,0,-4);
+shape.bezierCurveTo(0,-8,5,-5,5,0);
+shape.bezierCurveTo(5,5,0,5,0,0);
+const geo=new THREE.ExtrudeGeometry(shape,{depth:6,bevelEnabled:true});
+const mat=new THREE.MeshPhongMaterial({color:0xff0000});
+const heart=new THREE.Mesh(geo,mat);
+heart.scale.set(12,12,12);
+heart.position.set(0,40,-700);
+scene.add(heart);
+return heart;
+}
+const bigHeart=createHeart();
+
+let door=new THREE.Mesh(
+new THREE.BoxGeometry(20,35,3),
+new THREE.MeshPhongMaterial({color:0x550000})
+);
+door.position.set(0,30,-670);
+scene.add(door);
+
+const rain=[];
+for(let i=0;i<500;i++){
+const p=new THREE.Mesh(
+new THREE.SphereGeometry(0.6),
+new THREE.MeshBasicMaterial({color:0xff69b4})
+);
+p.position.set((Math.random()-0.5)*80,Math.random()*200,-700+(Math.random()-0.5)*80);
+scene.add(p);
+rain.push(p);
+}
+
+const keys={};
+document.addEventListener("keydown",e=>keys[e.key]=true);
+document.addEventListener("keyup",e=>keys[e.key]=false);
+
+document.getElementById("up").ontouchstart=()=>keys["w"]=true;
+document.getElementById("up").ontouchend=()=>keys["w"]=false;
+document.getElementById("down").ontouchstart=()=>keys["s"]=true;
+document.getElementById("down").ontouchend=()=>keys["s"]=false;
+document.getElementById("left").ontouchstart=()=>keys["a"]=true;
+document.getElementById("left").ontouchend=()=>keys["a"]=false;
+document.getElementById("right").ontouchstart=()=>keys["d"]=true;
+document.getElementById("right").ontouchend=()=>keys["d"]=false;
+
+let intro=true;
+let musicPlayed=false;
+
+function animate(){
+requestAnimationFrame(animate);
+
+if(intro){
+camera.position.z-=0.6;
+if(camera.position.z<40) intro=false;
+}else{
+if(keys["w"]) camera.position.z-=1.2;
+if(keys["s"]) camera.position.z+=1.2;
+if(keys["a"]) camera.position.x-=1.2;
+if(keys["d"]) camera.position.x+=1.2;
+}
+
+bigHeart.scale.x=12+Math.sin(Date.now()*0.002);
+bigHeart.scale.y=12+Math.sin(Date.now()*0.002);
+
+rain.forEach(p=>{
+p.position.y-=1;
+if(p.position.y<0) p.position.y=200;
+});
+
+if(camera.position.distanceTo(door.position)<40){
+door.rotation.y+=0.05;
+}
+
+if(camera.position.distanceTo(bigHeart.position)<120){
+document.getElementById("msg").style.display="block";
+if(!musicPlayed){
+document.getElementById("music").play();
+musicPlayed=true;
+}
+}
+
+renderer.render(scene,camera);
+}
+animate();
+</script>
+</body>
+</html>
